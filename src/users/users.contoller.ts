@@ -1,9 +1,13 @@
 import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Patch, Post, Put, Query, ValidationPipe } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { GetUserParamsDto } from "./dtos/get-user-params.dto";
+import { UserService } from "./providers/user.service";
 
 @Controller('users')
 export class UserController {
+    constructor(
+        private readonly userService: UserService
+    ){}
 
     @Get("/:id{/:optional}")
     getUsers(
