@@ -6,6 +6,7 @@ import { UsersService } from "./providers/users.service";
 @Controller('users')
 export class UsersController {
     constructor(
+        // Intra module dependency injection (within the same module scope)
         private readonly userService: UsersService
     ){}
 
