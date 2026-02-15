@@ -1,30 +1,33 @@
 import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Patch, Post, Put, Query, ValidationPipe } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { GetUserParamsDto } from "./dtos/get-user-params.dto";
-import { UserService } from "./providers/user.service";
+import { UsersService } from "./providers/users.service";
 
 @Controller('users')
-export class UserController {
+export class UsersController {
     constructor(
-        private readonly userService: UserService
+        private readonly userService: UsersService
     ){}
 
-    @Get("/:id{/:optional}")
+    @Get("")
     getUsers(
-        @Param() getUserParamsDto: GetUserParamsDto,
         @Query("limit", new DefaultValuePipe(10), ParseIntPipe) limit: number,
         @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number
     ) {
+        const data = this.userService.findAll(limit, page)
         return {
-            data: {
-                params: getUserParamsDto,
-                query: {
-                    limit,
-                    page
-                }
-            },
-            message: 'success'
-        };
+            data: data,
+            total: data.length,
+            page: page,
+            limit: limit,
+        }
+    }
+
+    @Get("/:id")
+    getUser(
+        @Param() getUserParamsDto: GetUserParamsDto,
+    ) {
+        return this.userService.findOne(getUserParamsDto.id);
     }
 
     @Post()
