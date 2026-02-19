@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,21 @@ async function bootstrap() {
       transform: true, // transform the data to the correct type. means it transform the incomming request to an instance of dto class after validation
     }
   ));
+
+
+  /**
+   *  Swagger Configuration
+   */
+
+  const config = new DocumentBuilder().setVersion("1.0")
+  .setTitle("NestJS Learning")
+  .setDescription("NestJS Learning API Documentation for Blogs and Users: localhost:3000")
+  .setTermsOfService("http://localhost:3000/terms-of-service")
+  .setLicense("MIT", "https://github.com/git/git-scm.com/blob/v2/MIT-LICENSE.txt")
+  .addServer("http://localhost:3000")
+  .build();
+  const swaggerDoc = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, swaggerDoc);
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
